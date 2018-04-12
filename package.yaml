@@ -1,0 +1,51 @@
+name:        monad-logger
+version:     0.3.28.4
+synopsis:    A class of monads which can log messages.
+description: See README and Haddocks at <https://www.stackage.org/package/monad-logger>
+category:    System
+author:      Michael Snoyman
+maintainer:  michael@snoyman.com
+license:     MIT
+github:      snoyberg/monad-logger
+
+extra-source-files:
+- ChangeLog.md
+- README.md
+
+flags:
+  template_haskell:
+    description: Enable Template Haskell support
+    manual: true
+    default: true
+
+dependencies:
+- base >=4 && <5
+- transformers
+- transformers-compat >=0.3
+- text
+- stm
+- stm-chans
+- lifted-base
+- resourcet >=1.1 && <1.3
+- conduit >=1.0 && <1.4
+- conduit-extra >=1.1 && <1.4
+- fast-logger >=2.1 && <2.5
+- transformers-base
+- monad-control >=1.0
+- monad-loops
+- mtl
+- bytestring >=0.10.2
+- exceptions >=0.6 && <0.11
+- unliftio-core
+
+library:
+  exposed-modules:
+  - Control.Monad.Logger
+  when:
+  - condition: impl(ghc >=8.0.1)
+    cpp-options: -DWITH_CALLSTACK
+  - condition: flag(template_haskell)
+    dependencies:
+    - template-haskell
+  - condition: flag(template_haskell)
+    cpp-options: -DWITH_TEMPLATE_HASKELL
