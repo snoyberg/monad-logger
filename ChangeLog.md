@@ -1,3 +1,7 @@
+## 0.3.28.4
+
+* Move to a new repo
+
 ## 0.3.28.3
 
 * Compat for older GHCs [#161](https://github.com/kazu-yamamoto/logger/pull/161)
