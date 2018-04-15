@@ -1,5 +1,5 @@
 name:        monad-logger
-version:     0.3.28.4
+version:     0.3.28.5
 synopsis:    A class of monads which can log messages.
 description: See README and Haddocks at <https://www.stackage.org/package/monad-logger>
 category:    System
@@ -44,6 +44,8 @@ library:
   when:
   - condition: impl(ghc >=8.0.1)
     cpp-options: -DWITH_CALLSTACK
+    exposed-modules:
+    - Control.Monad.Logger.CallStack
   - condition: flag(template_haskell)
     dependencies:
     - template-haskell
