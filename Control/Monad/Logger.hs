@@ -111,7 +111,6 @@ import Control.Applicative (Applicative (..), WrappedMonad(..))
 import Control.Concurrent.Chan (Chan(),writeChan,readChan)
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TBChan
-import Control.Exception.Lifted (onException, bracket)
 import Control.Monad (liftM, ap, when, void, forever)
 import Control.Monad.Base (MonadBase (liftBase), liftBaseDefault)
 import Control.Monad.IO.Unlift
@@ -167,6 +166,8 @@ import GHC.Stack as GHC
 import Prelude hiding (catch)
 
 import Data.Conduit.Lazy (MonadActive, monadActive)
+
+import UnliftIO.Exception (bracket, onException)
 
 data LogLevel = LevelDebug | LevelInfo | LevelWarn | LevelError | LevelOther Text
     deriving (Eq, Prelude.Show, Prelude.Read, Ord)
@@ -680,11 +681,11 @@ defaultLogStrWithoutLoc loc src level msg =
 -- | Run a block using a @MonadLogger@ instance which appends to the specified file.
 --
 -- @since 0.3.22
-runFileLoggingT :: MonadBaseControl IO m => FilePath -> LoggingT m a -> m a
+runFileLoggingT :: MonadUnliftIO m => FilePath -> LoggingT m a -> m a
 runFileLoggingT fp log = bracket
-    (liftBase $ openFile fp AppendMode)
-    (liftBase . hClose)
-    $ \h -> liftBase (hSetBuffering h LineBuffering) >> (runLoggingT log) (defaultOutput h)
+    (liftIO $ openFile fp AppendMode)
+    (liftIO . hClose)
+    $ \h -> liftIO (hSetBuffering h LineBuffering) >> (runLoggingT log) (defaultOutput h)
 
 -- | Run a block using a @MonadLogger@ instance which prints to stderr.
 --
@@ -726,7 +727,7 @@ unChanLoggingT chan = forever $ do
 --   exception.
 --
 -- @since 0.3.2
-withChannelLogger :: (MonadBaseControl IO m, MonadIO m)
+withChannelLogger :: (MonadUnliftIO m, MonadIO m)
                   => Int         -- ^ Number of messages to keep
                   -> LoggingT m a
                   -> LoggingT m a
