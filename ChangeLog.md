@@ -1,3 +1,8 @@
+## Unreleased
+
+* Tighten the constraint on `runFileLoggingT` and `withChannelLogger` from `MonadBaseControl IO m` to `MonadUnliftIO m`
+* Add `unliftio` dependency
+
 ## 0.3.28.5
 
 * Fix missing module [#1](https://github.com/snoyberg/monad-logger/issues/1)
