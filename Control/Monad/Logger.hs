@@ -114,6 +114,7 @@ import Control.Concurrent.STM.TBChan
 import Control.Exception.Lifted (onException, bracket)
 import Control.Monad (liftM, ap, when, void, forever)
 import Control.Monad.Base (MonadBase (liftBase), liftBaseDefault)
+import Control.Monad.Morph (MFunctor (hoist))
 import Control.Monad.IO.Unlift
 import Control.Monad.Loops (untilM)
 import Control.Monad.Trans.Control (MonadBaseControl (..), MonadTransControl (..), ComposeSt, defaultLiftBaseWith, defaultRestoreM)
@@ -368,6 +369,9 @@ deriving instance MonadResource m => MonadResource (NoLoggingT m)
 instance MonadActive m => MonadActive (LoggingT m) where
     monadActive = Trans.lift monadActive
 
+instance MFunctor NoLoggingT where
+    hoist f = NoLoggingT . f . runNoLoggingT
+
 instance Trans.MonadTrans NoLoggingT where
     lift = NoLoggingT
 
@@ -446,6 +450,8 @@ instance Functor m => Functor (WriterLoggingT m) where
 instance Monad m => MonadLogger (WriterLoggingT m) where
   monadLoggerLog loc source level msg = WriterLoggingT . return $ ((), singleton (loc, source, level, toLogStr msg))
 
+instance MFunctor WriterLoggingT where
+  hoist f = WriterLoggingT . f . unWriterLoggingT
 
 instance Trans.MonadTrans WriterLoggingT where
   lift ma = WriterLoggingT $ (, emptyDList) `liftM` ma
@@ -583,6 +589,9 @@ instance MonadResource m => MonadResource (LoggingT m) where
 
 instance MonadBase b m => MonadBase b (LoggingT m) where
     liftBase = Trans.lift . liftBase
+
+instance MFunctor LoggingT where
+    hoist f = LoggingT . (f .) . runLoggingT
 
 instance Trans.MonadTrans LoggingT where
     lift = LoggingT . const
