@@ -31,6 +31,7 @@ dependencies:
 - conduit-extra >=1.1 && <1.4
 - fast-logger >=2.1 && <2.5
 - transformers-base
+- mmorph
 - monad-control >=1.0
 - monad-loops
 - mtl
