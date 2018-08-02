@@ -1,3 +1,7 @@
+## 0.3.29
+
+* Export mapLoggingT and mapNoLoggingT
+
 ## 0.3.28.5
 
 * Fix missing module [#1](https://github.com/snoyberg/monad-logger/issues/1)

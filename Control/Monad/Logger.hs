@@ -48,9 +48,11 @@ module Control.Monad.Logger
     , withChannelLogger
     , filterLogger
     , NoLoggingT (..)
+    , mapNoLoggingT
     , WriterLoggingT (..)
     , execWriterLoggingT
     , runWriterLoggingT
+    , mapLoggingT
 #if WITH_TEMPLATE_HASKELL
     -- * TH logging
     , logDebug
@@ -776,6 +778,9 @@ instance MonadReader r m => MonadReader r (NoLoggingT m) where
   ask = Trans.lift ask
   local = mapNoLoggingT . local
 
+-- | Map the unwrapped computation using the given function.
+--
+-- @since 0.3.29
 mapLoggingT :: (m a -> n b) -> LoggingT m a -> LoggingT n b
 mapLoggingT f = LoggingT . (f .) . runLoggingT
 
@@ -788,6 +793,9 @@ instance MonadWriter w m => MonadWriter w (LoggingT m) where
   listen = mapLoggingT listen
   pass   = mapLoggingT pass
 
+-- | Map the unwrapped computation using the given function.
+--
+-- @since 0.3.29
 mapNoLoggingT :: (m a -> n b) -> NoLoggingT m a -> NoLoggingT n b
 mapNoLoggingT f = NoLoggingT . f . runNoLoggingT
 
