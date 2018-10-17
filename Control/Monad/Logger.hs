@@ -116,6 +116,9 @@ import Control.Concurrent.STM.TBChan
 import Control.Exception.Lifted (onException, bracket)
 import Control.Monad (liftM, ap, when, void, forever)
 import Control.Monad.Base (MonadBase (liftBase), liftBaseDefault)
+#if MIN_VERSION_base(4, 9, 0)
+import qualified Control.Monad.Fail as Fail
+#endif
 import Control.Monad.IO.Unlift
 import Control.Monad.Loops (untilM)
 import Control.Monad.Trans.Control (MonadBaseControl (..), MonadTransControl (..), ComposeSt, defaultLiftBaseWith, defaultRestoreM)
@@ -380,6 +383,12 @@ instance MonadTransControl NoLoggingT where
     {-# INLINE liftWith #-}
     {-# INLINE restoreT #-}
 
+#if MIN_VERSION_base(4, 9, 0)
+-- | @since 0.3.30
+instance (Fail.MonadFail m) => Fail.MonadFail (NoLoggingT m) where
+  fail = Trans.lift . Fail.fail
+#endif
+
 instance MonadBaseControl b m => MonadBaseControl b (NoLoggingT m) where
      type StM (NoLoggingT m) a = StM m a
      liftBaseWith f = NoLoggingT $
@@ -542,6 +551,12 @@ instance Applicative m => Applicative (LoggingT m) where
                                        (runLoggingT loggerF) loggerFn
                                        <*> (runLoggingT loggerA) loggerFn
     {-# INLINE (<*>) #-}
+#endif
+
+#if MIN_VERSION_base(4, 9, 0)
+-- | @since 0.3.30
+instance (Fail.MonadFail m) => Fail.MonadFail (LoggingT m) where
+  fail = Trans.lift . Fail.fail
 #endif
 
 instance Monad m => Monad (LoggingT m) where
