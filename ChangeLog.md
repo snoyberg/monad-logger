@@ -1,3 +1,7 @@
+## 0.3.30
+
+* Added `MonadFail` instances for `LoggingT` and `NoLoggingT`.
+
 ## 0.3.29
 
 * Export mapLoggingT and mapNoLoggingT
