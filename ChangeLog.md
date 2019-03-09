@@ -1,3 +1,7 @@
+## 0.3.31
+
+* Export LogLine type synonym
+
 ## 0.3.30
 
 * Added `MonadFail` instances for `LoggingT` and `NoLoggingT`.

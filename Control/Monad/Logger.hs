@@ -50,6 +50,7 @@ module Control.Monad.Logger
     , NoLoggingT (..)
     , mapNoLoggingT
     , WriterLoggingT (..)
+    , LogLine
     , execWriterLoggingT
     , runWriterLoggingT
     , mapLoggingT
@@ -407,7 +408,7 @@ instance MonadUnliftIO m => MonadUnliftIO (NoLoggingT m) where
                 withUnliftIO $ \u ->
                 return (UnliftIO (unliftIO u . runNoLoggingT))
 
--- | @since 0.3.28
+-- | @since 0.3.31
 type LogLine = (Loc, LogSource, LogLevel, LogStr)
 
 -- | @since 0.3.28
