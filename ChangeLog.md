@@ -1,3 +1,8 @@
+## 0.3.31
+
+* Re-export `fromLogStr` to make implementing custom instances more convenient.
+  [#14](https://github.com/snoyberg/monad-logger/pull/14)
+
 ## 0.3.30
 
 * Added `MonadFail` instances for `LoggingT` and `NoLoggingT`.
