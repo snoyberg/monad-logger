@@ -115,7 +115,7 @@ import Control.Concurrent.Chan (Chan(),writeChan,readChan)
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TBChan
 import Control.Exception.Lifted (onException, bracket)
-import Control.Monad (liftM, ap, when, void, forever)
+import Control.Monad (liftM, when, void, forever)
 import Control.Monad.Base (MonadBase (liftBase), liftBaseDefault)
 #if MIN_VERSION_base(4, 9, 0)
 import qualified Control.Monad.Fail as Fail
@@ -136,7 +136,6 @@ import Control.Monad.Catch (MonadThrow (..), MonadCatch (..), MonadMask (..)
 import Control.Monad.Trans.Identity ( IdentityT)
 import Control.Monad.Trans.List     ( ListT    )
 import Control.Monad.Trans.Maybe    ( MaybeT   )
-import Control.Monad.Trans.Error    ( ErrorT, Error)
 import Control.Monad.Trans.Except   ( ExceptT  )
 
 import Control.Monad.Trans.Reader   ( ReaderT  )
@@ -169,8 +168,6 @@ import Control.Monad.Writer.Class ( MonadWriter (..) )
 #if WITH_CALLSTACK
 import GHC.Stack as GHC
 #endif
-
-import Prelude hiding (catch)
 
 import Data.Conduit.Lazy (MonadActive, monadActive)
 
@@ -234,7 +231,6 @@ instance MonadLogger (Lazy.ST s) where monadLoggerLog _ _ _ = return ()
 instance MonadLogger m => MonadLogger (IdentityT m) where DEF
 instance MonadLogger m => MonadLogger (ListT m) where DEF
 instance MonadLogger m => MonadLogger (MaybeT m) where DEF
-instance (MonadLogger m, Error e) => MonadLogger (ErrorT e m) where DEF
 instance MonadLogger m => MonadLogger (ExceptT e m) where DEF
 instance MonadLogger m => MonadLogger (ReaderT r m) where DEF
 instance MonadLogger m => MonadLogger (ContT r m) where DEF
@@ -252,7 +248,6 @@ instance (MonadLogger m, Monoid w) => MonadLogger (Strict.RWST r w s m) where DE
 instance MonadLoggerIO m => MonadLoggerIO (IdentityT m)
 instance MonadLoggerIO m => MonadLoggerIO (ListT m)
 instance MonadLoggerIO m => MonadLoggerIO (MaybeT m)
-instance (MonadLoggerIO m, Error e) => MonadLoggerIO (ErrorT e m)
 instance MonadLoggerIO m => MonadLoggerIO (ExceptT e m)
 instance MonadLoggerIO m => MonadLoggerIO (ReaderT r m)
 instance MonadLoggerIO m => MonadLoggerIO (ContT r m)
@@ -699,10 +694,10 @@ defaultLogStrWithoutLoc loc src level msg =
 --
 -- @since 0.3.22
 runFileLoggingT :: MonadBaseControl IO m => FilePath -> LoggingT m a -> m a
-runFileLoggingT fp log = bracket
+runFileLoggingT fp logt = bracket
     (liftBase $ openFile fp AppendMode)
     (liftBase . hClose)
-    $ \h -> liftBase (hSetBuffering h LineBuffering) >> (runLoggingT log) (defaultOutput h)
+    $ \h -> liftBase (hSetBuffering h LineBuffering) >> (runLoggingT logt) (defaultOutput h)
 
 -- | Run a block using a @MonadLogger@ instance which prints to stderr.
 --
@@ -726,7 +721,7 @@ runStdoutLoggingT = (`runLoggingT` defaultOutput stdout)
 runChanLoggingT :: MonadIO m => Chan LogLine -> LoggingT m a -> m a
 runChanLoggingT chan = (`runLoggingT` sink chan)
     where
-        sink chan loc src lvl msg = writeChan chan (loc,src,lvl,msg)
+        sink chan' loc src lvl msg = writeChan chan' (loc,src,lvl,msg)
 
 -- | Read logging tuples from an unbounded channel and log them into a
 --   `MonadLoggerIO` monad, forever.
