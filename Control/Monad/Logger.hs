@@ -16,6 +16,9 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE TupleSections #-}
+
+{-# OPTIONS_GHC -Wno-deprecations #-} -- for Control.Monad.Trans.Error
+
 -- |  This module provides the facilities needed for a decoupled logging system.
 --
 -- The 'MonadLogger' class is implemented by monads that give access to a
@@ -136,6 +139,7 @@ import Control.Monad.Catch (MonadThrow (..), MonadCatch (..), MonadMask (..)
 import Control.Monad.Trans.Identity ( IdentityT)
 import Control.Monad.Trans.List     ( ListT    )
 import Control.Monad.Trans.Maybe    ( MaybeT   )
+import Control.Monad.Trans.Error    ( ErrorT, Error)
 import Control.Monad.Trans.Except   ( ExceptT  )
 
 import Control.Monad.Trans.Reader   ( ReaderT  )
@@ -231,6 +235,7 @@ instance MonadLogger (Lazy.ST s) where monadLoggerLog _ _ _ = return ()
 instance MonadLogger m => MonadLogger (IdentityT m) where DEF
 instance MonadLogger m => MonadLogger (ListT m) where DEF
 instance MonadLogger m => MonadLogger (MaybeT m) where DEF
+instance (MonadLogger m, Error e) => MonadLogger (ErrorT e m) where DEF
 instance MonadLogger m => MonadLogger (ExceptT e m) where DEF
 instance MonadLogger m => MonadLogger (ReaderT r m) where DEF
 instance MonadLogger m => MonadLogger (ContT r m) where DEF
@@ -248,6 +253,7 @@ instance (MonadLogger m, Monoid w) => MonadLogger (Strict.RWST r w s m) where DE
 instance MonadLoggerIO m => MonadLoggerIO (IdentityT m)
 instance MonadLoggerIO m => MonadLoggerIO (ListT m)
 instance MonadLoggerIO m => MonadLoggerIO (MaybeT m)
+instance (MonadLoggerIO m, Error e) => MonadLoggerIO (ErrorT e m)
 instance MonadLoggerIO m => MonadLoggerIO (ExceptT e m)
 instance MonadLoggerIO m => MonadLoggerIO (ReaderT r m)
 instance MonadLoggerIO m => MonadLoggerIO (ContT r m)
