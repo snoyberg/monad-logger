@@ -16,9 +16,6 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE Trustworthy #-}
 {-# LANGUAGE TupleSections #-}
-
-{-# OPTIONS_GHC -Wno-deprecations #-} -- for Control.Monad.Trans.Error
-
 -- |  This module provides the facilities needed for a decoupled logging system.
 --
 -- The 'MonadLogger' class is implemented by monads that give access to a
