@@ -1,3 +1,4 @@
 /monad-logger.cabal
 *~
 /.stack-work/
+stack.yaml.lock
