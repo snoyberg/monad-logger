@@ -1,6 +1,12 @@
-## 0.3.32
+# ChangeLog for monad-logger
+
+## 0.3.33
 
 * Export `LogLine` type synonym.
+
+## 0.3.32
+
+* Compat with `unliftio-core` 0.2
 
 ## 0.3.31
 
