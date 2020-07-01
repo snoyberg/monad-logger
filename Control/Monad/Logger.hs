@@ -34,6 +34,7 @@ module Control.Monad.Logger
       MonadLogger(..)
     , MonadLoggerIO (..)
     , LogLevel(..)
+    , LogLine
     , LogSource
     -- * Re-export from fast-logger
     , LogStr
@@ -406,7 +407,7 @@ instance MonadUnliftIO m => MonadUnliftIO (NoLoggingT m) where
                 withUnliftIO $ \u ->
                 return (UnliftIO (unliftIO u . runNoLoggingT))
 
--- | @since 0.3.28
+-- | @since 0.3.32
 type LogLine = (Loc, LogSource, LogLevel, LogStr)
 
 -- | @since 0.3.28

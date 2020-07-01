@@ -1,3 +1,7 @@
+## 0.3.32
+
+* Export `LogLine` type synonym.
+
 ## 0.3.31
 
 * Re-export `fromLogStr` to make implementing custom instances more convenient.
