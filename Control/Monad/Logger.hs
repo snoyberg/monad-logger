@@ -403,11 +403,18 @@ instance MonadIO m => MonadLoggerIO (NoLoggingT m) where
 
 -- | @since 0.3.26
 instance MonadUnliftIO m => MonadUnliftIO (NoLoggingT m) where
+#if MIN_VERSION_unliftio_core(0, 1, 1)
   {-# INLINE withRunInIO #-}
   withRunInIO inner =
     NoLoggingT $
     withRunInIO $ \run ->
     inner (run . runNoLoggingT)
+#else
+  askUnliftIO =
+    NoLoggingT $
+    withUnliftIO $ \u ->
+    return (UnliftIO (unliftIO u . runNoLoggingT))
+#endif
 
 -- | @since 0.3.32
 type LogLine = (Loc, LogSource, LogLevel, LogStr)
@@ -627,11 +634,18 @@ instance MonadIO m => MonadLoggerIO (LoggingT m) where
 
 -- | @since 0.3.26
 instance MonadUnliftIO m => MonadUnliftIO (LoggingT m) where
+#if MIN_VERSION_unliftio_core(0, 1, 1)
   {-# INLINE withRunInIO #-}
   withRunInIO inner =
     LoggingT $ \r ->
     withRunInIO $ \run ->
     inner (run . flip runLoggingT r)
+#else
+  askUnliftIO =
+    LoggingT $ \f ->
+    withUnliftIO $ \u ->
+    return (UnliftIO (unliftIO u . flip runLoggingT f))
+#endif
 
 defaultOutput :: Handle
               -> Loc
