@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/snoyberg/monad-logger.svg?branch=master)](https://travis-ci.org/snoyberg/monad-logger)
 [![Build status](https://ci.appveyor.com/api/projects/status/egsp4r31t54ak4i5/branch/master?svg=true)](https://ci.appveyor.com/project/snoyberg/monad-logger/branch/master)
+[![Hackage](https://img.shields.io/hackage/v/monad-logger)](https://hackage.haskell.org/package/monad-logger)
 
 A monad transformer approach for logging.
 

@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.35
+
+* Add Hackage status badge
+
 ## 0.3.34
 
 * Fix build for lts-9 resolver
