@@ -872,19 +872,19 @@ logErrorN = logWithoutLoc "" LevelError
 logOtherN :: MonadLogger m => LogLevel -> Text -> m ()
 logOtherN = logWithoutLoc ""
 
-logDebugNS :: MonadLogger m => Text -> Text -> m ()
+logDebugNS :: MonadLogger m => LogSource -> Text -> m ()
 logDebugNS src = logWithoutLoc src LevelDebug
 
-logInfoNS :: MonadLogger m => Text -> Text -> m ()
+logInfoNS :: MonadLogger m => LogSource -> Text -> m ()
 logInfoNS src = logWithoutLoc src LevelInfo
 
-logWarnNS :: MonadLogger m => Text -> Text -> m ()
+logWarnNS :: MonadLogger m => LogSource -> Text -> m ()
 logWarnNS src = logWithoutLoc src LevelWarn
 
-logErrorNS :: MonadLogger m => Text -> Text -> m ()
+logErrorNS :: MonadLogger m => LogSource -> Text -> m ()
 logErrorNS src = logWithoutLoc src LevelError
 
-logOtherNS :: MonadLogger m => Text -> LogLevel -> Text -> m ()
+logOtherNS :: MonadLogger m => LogSource -> LogLevel -> Text -> m ()
 logOtherNS = logWithoutLoc
 
 #if WITH_CALLSTACK

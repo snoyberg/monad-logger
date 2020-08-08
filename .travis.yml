@@ -51,9 +51,9 @@ matrix:
   #- env: BUILD=cabal GHCVER=7.8.4 CABALVER=1.18 HAPPYVER=1.19.5 ALEXVER=3.1.7
   #  compiler: ": #GHC 7.8.4"
   #  addons: {apt: {packages: [cabal-install-1.18,ghc-7.8.4,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
-  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7
-    compiler: ": #GHC 7.10.3"
-    addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
+  #- env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22 HAPPYVER=1.19.5 ALEXVER=3.1.7
+  #  compiler: ": #GHC 7.10.3"
+  #  addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.0.2 CABALVER=1.24 HAPPYVER=1.19.5 ALEXVER=3.1.7
     compiler: ": #GHC 8.0.2"
     addons: {apt: {packages: [cabal-install-1.24,ghc-8.0.2,happy-1.19.5,alex-3.1.7], sources: [hvr-ghc]}}
@@ -92,16 +92,24 @@ matrix:
   #  compiler: ": #stack 8.0.1"
   #  addons: {apt: {packages: [libgmp-dev]}}
 
-  - env: BUILD=stack ARGS="--resolver lts-9"
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.0.2.yaml"
     compiler: ": #stack 8.0.2"
     addons: {apt: {packages: [libgmp-dev]}}
 
-  - env: BUILD=stack ARGS="--resolver lts-11"
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.2.2.yaml"
     compiler: ": #stack 8.2.2"
     addons: {apt: {packages: [libgmp-dev]}}
 
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.4.4.yaml"
+    compiler: ": #stack 8.4.4"
+    addons: {apt: {packages: [libgmp-dev]}}
+
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.6.5.yaml"
+    compiler: ": #stack 8.6.5"
+    addons: {apt: {packages: [libgmp-dev]}}
+
   # Nightly builds are allowed to fail
-  - env: BUILD=stack ARGS="--resolver nightly"
+  - env: BUILD=stack ARGS="--stack-yaml stack-nightly.yaml"
     compiler: ": #stack nightly"
     addons: {apt: {packages: [libgmp-dev]}}
 
@@ -127,21 +135,29 @@ matrix:
   #  compiler: ": #stack 8.0.1 osx"
   #  os: osx
 
-  - env: BUILD=stack ARGS="--resolver lts-9"
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.0.2.yaml"
     compiler: ": #stack 8.0.2 osx"
     os: osx
 
-  - env: BUILD=stack ARGS="--resolver lts-11"
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.2.2.yaml"
     compiler: ": #stack 8.2.2 osx"
     os: osx
 
-  - env: BUILD=stack ARGS="--resolver nightly"
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.4.4.yaml"
+    compiler: ": #stack 8.4.4 osx"
+    os: osx
+
+  - env: BUILD=stack ARGS="--stack-yaml stack-ghc-8.6.5.yaml"
+    compiler: ": #stack 8.6.5 osx"
+    os: osx
+
+  - env: BUILD=stack ARGS="--stack-yaml stack-nightly.yaml"
     compiler: ": #stack nightly osx"
     os: osx
 
   allow_failures:
   - env: BUILD=cabal GHCVER=head  CABALVER=head HAPPYVER=1.19.5 ALEXVER=3.1.7
-  - env: BUILD=stack ARGS="--resolver nightly"
+  - env: BUILD=stack ARGS="--stack-yaml stack-nightly.yaml"
 
 before_install:
 # Using compiler above sets CC to an invalid value, so unset it
