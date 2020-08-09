@@ -1,1 +1,4 @@
-resolver: lts-16.0
+# Latest for GHC 8.8.x (GHC 8.8.3)
+resolver: lts-16.8
+# Required for Windows 10 version 2004, as GHC 8.8.x broken before GHC 8.8.4
+compiler: ghc-8.8.4
