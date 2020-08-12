@@ -1,12 +1,9 @@
 # ChangeLog for monad-logger
 
-## 0.3.36
-
-* Document `Loc` [#26](https://github.com/snoyberg/monad-logger/pull/26)
-
 ## 0.3.35
 
 * Add Hackage status badge
+* Document `Loc` [#26](https://github.com/snoyberg/monad-logger/pull/26)
 
 ## 0.3.34
 
