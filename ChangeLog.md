@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.36
+
+* Document `Loc` []()
+
 ## 0.3.35
 
 * Add Hackage status badge

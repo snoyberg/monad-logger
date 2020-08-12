@@ -100,6 +100,7 @@ module Control.Monad.Logger
 #endif
     -- * utilities for defining your own loggers
     , defaultLogStr
+    -- $locDocs
     , Loc (..)
     , defaultLoc
     ) where
@@ -177,6 +178,22 @@ data LogLevel = LevelDebug | LevelInfo | LevelWarn | LevelError | LevelOther Tex
     deriving (Eq, Prelude.Show, Prelude.Read, Ord)
 
 type LogSource = Text
+
+-- $locDocs
+--
+-- === Loc
+--
+-- When @monad-logger@ is compiled with the @template_haskell@ flag set to true (the default), the 'Loc' below is a re-export from the @template-haskell@ package.
+-- When the flag is false, the 'Loc' below is a copy of that data structure defined in @monad-logger@ itself.
+--
+-- If you are making a library that:
+--
+-- * Uses @monad-logger@
+-- * Uses 'Loc' in a type signature
+-- * But doesn't need to depend on @template-haskell@ for other reasons
+--
+-- You can import 'Loc' directly from this package, instead of adding an dependency on @template-haskell@ and importing from there.
+-- This allows users to compile your package in environments that don't support @template-haskell@.
 
 #if WITH_TEMPLATE_HASKELL
 
