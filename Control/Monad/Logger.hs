@@ -530,6 +530,30 @@ instance MonadMask m => MonadMask (WriterLoggingT m) where
 
 -- | Monad transformer that adds a new logging function.
 --
+-- If you write a 'LoggingT' that takes a lock (e.g. for the purpose of
+-- preventing interleaved concurrent log output), you should make sure that
+-- the 'runLoggingT' @IO@ callback function you provide evaluates its
+-- 'LogStr' argument to WHNF (by using 'seq' or @BangPatterns@; see also
+-- the docs of 'LoggingT') taking the lock.
+--
+-- Otherwise, your lock will be taken longer than necessary when a long-running
+-- pure computation produces the log message, and which will prevent other
+-- concurrent logging. Consider this code:
+--
+-- > -- If after 100 ms the function isn't done, tell the user to wait.
+-- > withAsync (threadDelay 100000 >> logWarn "Still computing...") $ \_ -> do
+-- >   logInfo (computeCryptographicHash multiGigabyteByteString :: Text)
+--
+-- Because the 'logInfo' takes the lock first, and while holding it does the
+-- long computation, the 'logWarn' can only print its "Still computing..."
+-- message after the full computation is done -- exactly the opposite of
+-- what was intended. And this is despite the fact that the 'logInfo' cannot
+-- actually make good use of the lock (that is, write anything) until the full
+-- 'Text' is produced.
+--
+-- By evaluating the 'LogStr' to WHNF before taking your lock, you can ensure
+-- that code like the above behaves as expected.
+--
 -- @since 0.2.2
 newtype LoggingT m a = LoggingT { runLoggingT :: (Loc -> LogSource -> LogLevel -> LogStr -> IO ()) -> m a }
 
@@ -640,6 +664,7 @@ defaultOutput h loc src level msg =
     S8.hPutStr h ls
   where
     ls = defaultLogStrBS loc src level msg
+
 defaultLogStrBS :: Loc
                 -> LogSource
                 -> LogLevel
