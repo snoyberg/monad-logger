@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.36
+
+* Export the `defaultOutput` function, useful for defining custom instances of `MonadLogger`. [#29](https://github.com/snoyberg/monad-logger/pull/29)
+
 ## 0.3.35
 
 * Add Hackage status badge
