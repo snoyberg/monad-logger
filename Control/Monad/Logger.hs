@@ -103,6 +103,7 @@ module Control.Monad.Logger
     -- $locDocs
     , Loc (..)
     , defaultLoc
+    , defaultOutput
     ) where
 
 #if WITH_TEMPLATE_HASKELL
@@ -664,6 +665,18 @@ instance MonadUnliftIO m => MonadUnliftIO (LoggingT m) where
     return (UnliftIO (unliftIO u . flip runLoggingT f))
 #endif
 
+-- | A default implementation of 'monadLoggerLog' that accepts a file
+-- handle as the first argument.
+--
+-- This is used in the definition of 'runStdoutLoggingT':
+--
+-- @
+-- 'runStdoutLoggingT' :: 'MonadIO' m => 'LoggingT' m a -> m a
+-- 'runStdoutLoggingT' action =
+--     'runLoggingT' action ('defaultOutput' 'stdout')
+-- @
+--
+-- @since 0.3.36
 defaultOutput :: Handle
               -> Loc
               -> LogSource
@@ -674,13 +687,14 @@ defaultOutput h loc src level msg =
     S8.hPutStr h ls
   where
     ls = defaultLogStrBS loc src level msg
+
 defaultLogStrBS :: Loc
                 -> LogSource
                 -> LogLevel
                 -> LogStr
                 -> S8.ByteString
 defaultLogStrBS a b c d =
-    toBS $ defaultLogStr a b c d
+    fromLogStr $ defaultLogStr a b c d
   where
     toBS = fromLogStr
 
