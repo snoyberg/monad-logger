@@ -1,6 +1,6 @@
 # ChangeLog for monad-logger
 
-## Unreleased changes
+## 0.3.37
 
 * Add `Semigroup`/`Monoid` instances to `LoggingT`, `NoLoggingT`, and `WriterLoggingT`
 
