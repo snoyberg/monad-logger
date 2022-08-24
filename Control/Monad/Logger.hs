@@ -434,6 +434,12 @@ instance MonadUnliftIO m => MonadUnliftIO (NoLoggingT m) where
     return (UnliftIO (unliftIO u . runNoLoggingT))
 #endif
 
+instance (Applicative m, Semigroup a) => Semigroup (NoLoggingT m a) where
+  (<>) = liftA2 (<>)
+
+instance (Applicative m, Monoid a) => Monoid (NoLoggingT m a) where
+  mempty = pure mempty
+
 -- | @since 0.3.32
 type LogLine = (Loc, LogSource, LogLevel, LogStr)
 
@@ -554,6 +560,12 @@ instance MonadMask m => MonadMask (WriterLoggingT m) where
           return (y, appendDList w1 w2))
 #endif
 
+instance (Applicative m, Semigroup a) => Semigroup (WriterLoggingT m a) where
+  (<>) = liftA2 (<>)
+
+instance (Applicative m, Monoid a) => Monoid (WriterLoggingT m a) where
+  mempty = pure mempty
+
 -- | Monad transformer that adds a new logging function.
 --
 -- @since 0.2.2
@@ -664,6 +676,12 @@ instance MonadUnliftIO m => MonadUnliftIO (LoggingT m) where
     withUnliftIO $ \u ->
     return (UnliftIO (unliftIO u . flip runLoggingT f))
 #endif
+
+instance (Applicative m, Semigroup a) => Semigroup (LoggingT m a) where
+  (<>) = liftA2 (<>)
+
+instance (Applicative m, Monoid a) => Monoid (LoggingT m a) where
+  mempty = pure mempty
 
 -- | A default implementation of 'monadLoggerLog' that accepts a file
 -- handle as the first argument.
