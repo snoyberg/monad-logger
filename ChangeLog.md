@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## Unreleased changes
+
+* Add `Semigroup`/`Monoid` instances to `LoggingT`, `NoLoggingT`, and `WriterLoggingT`
+
 ## 0.3.36
 
 * Export the `defaultOutput` function, useful for defining custom instances of `MonadLogger`. [#29](https://github.com/snoyberg/monad-logger/pull/29)
