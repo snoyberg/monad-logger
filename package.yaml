@@ -19,7 +19,7 @@ flags:
     default: true
 
 dependencies:
-- base >= 4.8 && <5
+- base >= 4.11 && <5
 - transformers
 - transformers-compat >=0.3
 - text
