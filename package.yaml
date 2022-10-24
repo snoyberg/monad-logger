@@ -26,7 +26,7 @@ dependencies:
 - stm
 - stm-chans
 - lifted-base
-- resourcet >=1.1 && <1.3
+- resourcet >=1.1 && <1.4
 - conduit >=1.0 && <1.4
 - conduit-extra >=1.1 && <1.4
 - fast-logger >=2.1 && <3.2
