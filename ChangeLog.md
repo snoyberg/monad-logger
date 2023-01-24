@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.38
+
+* Drop old deprecated instances to support transformers 0.6 [#39](https://github.com/snoyberg/monad-logger/pull/39)
+
 ## 0.3.37
 
 * Add `Semigroup`/`Monoid` instances to `LoggingT`, `NoLoggingT`, and `WriterLoggingT`

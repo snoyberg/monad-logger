@@ -1,5 +1,5 @@
 name:        monad-logger
-version:     0.3.37
+version:     0.3.38
 synopsis:    A class of monads which can log messages.
 description: See README and Haddocks at <https://www.stackage.org/package/monad-logger>
 category:    System
