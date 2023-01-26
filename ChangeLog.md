@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.39
+
+* Make the previous change backwards compatible with CPP
+
 ## 0.3.38
 
 * Drop old deprecated instances to support transformers 0.6 [#39](https://github.com/snoyberg/monad-logger/pull/39)
