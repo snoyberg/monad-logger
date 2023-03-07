@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.40
+
+* Relax `fast-logger` upper bound from 3.2 to 3.3
+
 ## 0.3.39
 
 * Make the previous change backwards compatible with CPP
