@@ -113,7 +113,7 @@ import Language.Haskell.TH.Syntax (Lift (lift), Q, Exp, Loc (..), qLocation)
 import Data.Functor ((<$>))
 import Data.Monoid (Monoid)
 
-import Control.Applicative (Applicative (..), WrappedMonad(..))
+import Control.Applicative (Alternative (..), Applicative (..), WrappedMonad(..))
 import Control.Concurrent.Chan (Chan(),writeChan,readChan)
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TBChan
@@ -389,7 +389,7 @@ logOtherS = [|\src level msg -> monadLoggerLog $(qLocation >>= liftLoc) src (Lev
 --
 -- @since 0.2.4
 newtype NoLoggingT m a = NoLoggingT { runNoLoggingT :: m a }
-  deriving (Functor, Applicative, Monad, MonadIO, MonadThrow, MonadCatch, MonadMask, MonadActive, MonadBase b)
+  deriving (Functor, Applicative, Alternative, Monad, MonadIO, MonadThrow, MonadCatch, MonadMask, MonadActive, MonadBase b)
 
 -- For some reason GND is a fool on GHC 7.10 and older, we have to help it by providing the context explicitly.
 deriving instance MonadResource m => MonadResource (NoLoggingT m)
@@ -488,6 +488,10 @@ instance Applicative m => Applicative (WriterLoggingT m) where
   pure a = WriterLoggingT . pure $ (a, emptyDList)
   WriterLoggingT mf <*> WriterLoggingT ma = WriterLoggingT $
     fmap (\((f, msgs), (a, msgs')) -> (f a, appendDList msgs msgs')) ((,) <$> mf <*> ma)
+
+instance Alternative m => Alternative (WriterLoggingT m) where
+  empty = WriterLoggingT ((, emptyDList) <$> empty)
+  WriterLoggingT x <|> WriterLoggingT y = WriterLoggingT (x <|> y)
 
 instance Functor m => Functor (WriterLoggingT m) where
   fmap f (WriterLoggingT ma) = WriterLoggingT $
@@ -597,6 +601,10 @@ instance Applicative m => Applicative (LoggingT m) where
                                        <*> (runLoggingT loggerA) loggerFn
     {-# INLINE (<*>) #-}
 #endif
+
+instance (Alternative m) => Alternative (LoggingT m) where
+  empty = LoggingT (const empty)
+  LoggingT x <|> LoggingT y = LoggingT (\f -> x f <|> y f)
 
 #if MIN_VERSION_base(4, 9, 0)
 -- | @since 0.3.30
