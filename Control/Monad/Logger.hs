@@ -489,10 +489,6 @@ instance Applicative m => Applicative (WriterLoggingT m) where
   WriterLoggingT mf <*> WriterLoggingT ma = WriterLoggingT $
     fmap (\((f, msgs), (a, msgs')) -> (f a, appendDList msgs msgs')) ((,) <$> mf <*> ma)
 
-instance Alternative m => Alternative (WriterLoggingT m) where
-  empty = WriterLoggingT ((, emptyDList) <$> empty)
-  WriterLoggingT x <|> WriterLoggingT y = WriterLoggingT (x <|> y)
-
 instance Functor m => Functor (WriterLoggingT m) where
   fmap f (WriterLoggingT ma) = WriterLoggingT $
     fmap (\(a, msgs) -> (f a, msgs)) ma
@@ -602,6 +598,7 @@ instance Applicative m => Applicative (LoggingT m) where
     {-# INLINE (<*>) #-}
 #endif
 
+-- @since 0.3.40
 instance (Alternative m) => Alternative (LoggingT m) where
   empty = LoggingT (const empty)
   LoggingT x <|> LoggingT y = LoggingT (\f -> x f <|> y f)
