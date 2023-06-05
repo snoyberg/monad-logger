@@ -389,7 +389,10 @@ logOtherS = [|\src level msg -> monadLoggerLog $(qLocation >>= liftLoc) src (Lev
 --
 -- @since 0.2.4
 newtype NoLoggingT m a = NoLoggingT { runNoLoggingT :: m a }
-  deriving (Functor, Applicative, Alternative, Monad, MonadIO, MonadThrow, MonadCatch, MonadMask, MonadActive, MonadBase b)
+  deriving (
+    Functor, Applicative, Monad, MonadIO, MonadThrow, MonadCatch, MonadMask, MonadActive, MonadBase b
+    , Alternative -- ^ @since 0.3.40
+    )
 
 -- For some reason GND is a fool on GHC 7.10 and older, we have to help it by providing the context explicitly.
 deriving instance MonadResource m => MonadResource (NoLoggingT m)
@@ -598,7 +601,7 @@ instance Applicative m => Applicative (LoggingT m) where
     {-# INLINE (<*>) #-}
 #endif
 
--- @since 0.3.40
+-- | @since 0.3.40
 instance (Alternative m) => Alternative (LoggingT m) where
   empty = LoggingT (const empty)
   LoggingT x <|> LoggingT y = LoggingT (\f -> x f <|> y f)
