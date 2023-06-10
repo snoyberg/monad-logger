@@ -20,7 +20,7 @@ flags:
 
 dependencies:
 - base >= 4.11 && <5
-- transformers
+- transformers <0.6
 - transformers-compat >=0.3
 - text
 - stm
