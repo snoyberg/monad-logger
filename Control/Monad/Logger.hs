@@ -170,7 +170,9 @@ import Control.Monad.RWS.Class    ( MonadRWS )
 import Control.Monad.Reader.Class ( MonadReader (..) )
 import Control.Monad.State.Class  ( MonadState (..) )
 import Control.Monad.Writer.Class ( MonadWriter (..) )
+#if MIN_VERSION_mtl(2, 3, 1)
 import Control.Monad.Accum        ( MonadAccum (..) )
+#endif
 
 #if WITH_CALLSTACK
 import GHC.Stack as GHC
@@ -905,6 +907,7 @@ instance MonadWriter w m => MonadWriter w (NoLoggingT m) where
     listen = mapNoLoggingT listen
     pass   = mapNoLoggingT pass
     
+#if MIN_VERSION_mtl(2, 3, 1)
 -- | @since 0.3.40
 instance MonadAccum w m => MonadAccum w (LoggingT m) where
   accum = Trans.lift . accum
@@ -912,6 +915,7 @@ instance MonadAccum w m => MonadAccum w (LoggingT m) where
 -- | @since 0.3.40
 instance MonadAccum w m => MonadAccum w (NoLoggingT m) where
   accum = Trans.lift . accum
+#endif
 
 -- | dummy location, used with 'logWithoutLoc'
 --
