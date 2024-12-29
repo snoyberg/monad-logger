@@ -4,6 +4,7 @@
 
 * Relax `fast-logger` upper bound from 3.2 to 3.3
 * Add `Alternative` instances for `LoggingT` and `NoLoggingT`
+* Add `MonadAccum` instances for `LoggingT` and `NoLoggingT`
 
 ## 0.3.39
 
