@@ -908,11 +908,11 @@ instance MonadWriter w m => MonadWriter w (NoLoggingT m) where
     pass   = mapNoLoggingT pass
     
 #if MIN_VERSION_mtl(2, 3, 1)
--- | @since 0.3.40
+-- | @since 0.3.41
 instance MonadAccum w m => MonadAccum w (LoggingT m) where
   accum = Trans.lift . accum
 
--- | @since 0.3.40
+-- | @since 0.3.41
 instance MonadAccum w m => MonadAccum w (NoLoggingT m) where
   accum = Trans.lift . accum
 #endif
