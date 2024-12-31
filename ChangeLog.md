@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.41
+
+* Add `MonadAccum` instances for `LoggingT` and `NoLoggingT`
+
 ## 0.3.40
 
 * Relax `fast-logger` upper bound from 3.2 to 3.3
