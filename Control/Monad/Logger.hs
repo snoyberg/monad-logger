@@ -113,7 +113,7 @@ import Language.Haskell.TH.Syntax (Lift (lift), Q, Exp, Loc (..), qLocation)
 import Data.Functor ((<$>))
 import Data.Monoid (Monoid)
 
-import Control.Applicative (Alternative (..), Applicative (..), WrappedMonad(..))
+import Control.Applicative (Alternative (..), Applicative (..))
 import Control.Concurrent.Chan (Chan(),writeChan,readChan)
 import Control.Concurrent.STM
 import Control.Concurrent.STM.TBChan
@@ -484,7 +484,6 @@ execWriterLoggingT :: Functor m => WriterLoggingT m a -> m [LogLine]
 execWriterLoggingT ma = snd <$> runWriterLoggingT ma
 
 instance Monad m => Monad (WriterLoggingT m) where
-  return = unwrapMonad . pure
   (WriterLoggingT ma) >>= f = WriterLoggingT $ do
     (a, msgs)   <- ma
     (a', msgs') <- unWriterLoggingT $ f a
@@ -616,7 +615,6 @@ instance (Fail.MonadFail m) => Fail.MonadFail (LoggingT m) where
 #endif
 
 instance Monad m => Monad (LoggingT m) where
-    return = LoggingT . const . return
     LoggingT ma >>= f = LoggingT $ \r -> do
         a <- ma r
         let LoggingT f' = f a

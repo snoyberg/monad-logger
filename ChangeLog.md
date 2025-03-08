@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.3.42
+
+* Forward compatibility with `-Wnoncanonical-monad-instances` becoming an error
+
 ## 0.3.41
 
 * Add `MonadAccum` instances for `LoggingT` and `NoLoggingT`
