@@ -1,5 +1,9 @@
 # ChangeLog for monad-logger
 
+## 0.4.0
+
+* Add `LevelTrace` and `LevelFatal` log levels and their logging functions (breaking: new `LogLevel` constructors)
+
 ## 0.3.42
 
 * Forward compatibility with `-Wnoncanonical-monad-instances` becoming an error
