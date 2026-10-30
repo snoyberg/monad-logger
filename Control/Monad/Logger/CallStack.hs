@@ -13,12 +13,17 @@ module Control.Monad.Logger.CallStack (
   , logWarnSH
   , logErrorSH
   , logOtherSH
+  , logTrace
+  , logFatal
+  , logTraceSH
+  , logFatalSH
   ) where
 
 import           Control.Monad.Logger as Log hiding (logDebug, logDebugSH,
                                               logError, logErrorSH, logInfo,
                                               logInfoSH, logOther, logOtherSH,
-                                              logWarn, logWarnSH)
+                                              logWarn, logWarnSH, logTrace,
+                                              logTraceSH, logFatal, logFatalSH)
 import           Data.Text            (Text)
 import qualified Data.Text            as Text
 import           GHC.Stack
@@ -84,3 +89,19 @@ logErrorSH = Log.logErrorCS callStack . Text.pack . show
 -- @since 0.3.25
 logOtherSH :: (HasCallStack, Log.MonadLogger m, Show a) => Log.LogLevel -> a -> m ()
 logOtherSH lvl = Log.logOtherCS callStack lvl . Text.pack . show
+
+-- | See 'logDebug'
+logTrace :: (HasCallStack, Log.MonadLogger m) => Text -> m ()
+logTrace = Log.logTraceCS callStack
+
+-- | See 'logDebug'
+logFatal :: (HasCallStack, Log.MonadLogger m) => Text -> m ()
+logFatal = Log.logFatalCS callStack
+
+-- | See 'logDebugSH'
+logTraceSH :: (HasCallStack, Log.MonadLogger m, Show a) => a -> m ()
+logTraceSH = Log.logTraceCS callStack . Text.pack . show
+
+-- | See 'logDebugSH'
+logFatalSH :: (HasCallStack, Log.MonadLogger m, Show a) => a -> m ()
+logFatalSH = Log.logFatalCS callStack . Text.pack . show

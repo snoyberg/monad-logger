@@ -57,45 +57,57 @@ module Control.Monad.Logger
     , mapLoggingT
 #if WITH_TEMPLATE_HASKELL
     -- * TH logging
+    , logTrace
     , logDebug
     , logInfo
     , logWarn
     , logError
+    , logFatal
     , logOther
     -- * TH logging of showable values
+    , logTraceSH
     , logDebugSH
     , logInfoSH
     , logWarnSH
     , logErrorSH
+    , logFatalSH
     , logOtherSH
     -- * TH logging with source
+    , logTraceS
     , logDebugS
     , logInfoS
     , logWarnS
     , logErrorS
+    , logFatalS
     , logOtherS
     -- * TH util
     , liftLoc
 #endif
     -- * Non-TH logging
+    , logTraceN
     , logDebugN
     , logInfoN
     , logWarnN
     , logErrorN
+    , logFatalN
     , logOtherN
     -- * Non-TH logging with source
     , logWithoutLoc
+    , logTraceNS
     , logDebugNS
     , logInfoNS
     , logWarnNS
     , logErrorNS
+    , logFatalNS
     , logOtherNS
 #if WITH_CALLSTACK
     -- * Callstack logging
+    , logTraceCS
     , logDebugCS
     , logInfoCS
     , logWarnCS
     , logErrorCS
+    , logFatalCS
     , logOtherCS
 #endif
     -- * utilities for defining your own loggers
@@ -180,7 +192,7 @@ import GHC.Stack as GHC
 
 import Data.Conduit.Lazy (MonadActive, monadActive)
 
-data LogLevel = LevelDebug | LevelInfo | LevelWarn | LevelError | LevelOther Text
+data LogLevel = LevelTrace | LevelDebug | LevelInfo | LevelWarn | LevelError | LevelFatal | LevelOther Text
     deriving (Eq, Prelude.Show, Prelude.Read, Ord)
 
 type LogSource = Text
@@ -204,10 +216,12 @@ type LogSource = Text
 #if WITH_TEMPLATE_HASKELL
 
 instance Lift LogLevel where
+    lift LevelTrace = [|LevelTrace|]
     lift LevelDebug = [|LevelDebug|]
     lift LevelInfo  = [|LevelInfo|]
     lift LevelWarn  = [|LevelWarn|]
     lift LevelError = [|LevelError|]
+    lift LevelFatal = [|LevelFatal|]
     lift (LevelOther x) = [|LevelOther $ pack $(lift $ unpack x)|]
 
 #else
@@ -321,6 +335,12 @@ logWarn = logTH LevelWarn
 -- | See 'logDebug'
 logError :: Q Exp
 logError = logTH LevelError
+-- | See 'logDebug'
+logTrace :: Q Exp
+logTrace = logTH LevelTrace
+-- | See 'logDebug'
+logFatal :: Q Exp
+logFatal = logTH LevelFatal
 
 -- | Generates a function that takes a 'Text' and logs a 'LevelOther' message. Usage:
 --
@@ -346,6 +366,12 @@ logWarnSH = logTHShow LevelWarn
 -- | See 'logDebugSH'
 logErrorSH :: Q Exp
 logErrorSH = logTHShow LevelError
+-- | See 'logDebugSH'
+logTraceSH :: Q Exp
+logTraceSH = logTHShow LevelTrace
+-- | See 'logDebugSH'
+logFatalSH :: Q Exp
+logFatalSH = logTHShow LevelFatal
 
 -- | Generates a function that takes a 'Show a => a' and logs a 'LevelOther' message. Usage:
 --
@@ -380,6 +406,12 @@ logWarnS = [|\a b -> monadLoggerLog $(qLocation >>= liftLoc) a LevelWarn (b :: T
 -- | See 'logDebugS'
 logErrorS :: Q Exp
 logErrorS = [|\a b -> monadLoggerLog $(qLocation >>= liftLoc) a LevelError (b :: Text)|]
+-- | See 'logDebugS'
+logTraceS :: Q Exp
+logTraceS = [|\a b -> monadLoggerLog $(qLocation >>= liftLoc) a LevelTrace (b :: Text)|]
+-- | See 'logDebugS'
+logFatalS :: Q Exp
+logFatalS = [|\a b -> monadLoggerLog $(qLocation >>= liftLoc) a LevelFatal (b :: Text)|]
 
 -- | Generates a function that takes a 'LogSource', a level name and a 'Text' and logs a 'LevelOther' message. Usage:
 --
@@ -943,6 +975,12 @@ logWarnN = logWithoutLoc "" LevelWarn
 logErrorN :: MonadLogger m => Text -> m ()
 logErrorN = logWithoutLoc "" LevelError
 
+logTraceN :: MonadLogger m => Text -> m ()
+logTraceN = logWithoutLoc "" LevelTrace
+
+logFatalN :: MonadLogger m => Text -> m ()
+logFatalN = logWithoutLoc "" LevelFatal
+
 logOtherN :: MonadLogger m => LogLevel -> Text -> m ()
 logOtherN = logWithoutLoc ""
 
@@ -957,6 +995,12 @@ logWarnNS src = logWithoutLoc src LevelWarn
 
 logErrorNS :: MonadLogger m => LogSource -> Text -> m ()
 logErrorNS src = logWithoutLoc src LevelError
+
+logTraceNS :: MonadLogger m => LogSource -> Text -> m ()
+logTraceNS src = logWithoutLoc src LevelTrace
+
+logFatalNS :: MonadLogger m => LogSource -> Text -> m ()
+logFatalNS src = logWithoutLoc src LevelFatal
 
 logOtherNS :: MonadLogger m => LogSource -> LogLevel -> Text -> m ()
 logOtherNS = logWithoutLoc
@@ -1014,6 +1058,14 @@ logWarnCS cs msg = logCS cs "" LevelWarn msg
 -- @since 0.3.19
 logErrorCS :: MonadLogger m => GHC.CallStack -> Text -> m ()
 logErrorCS cs msg = logCS cs "" LevelError msg
+
+-- | See 'logDebugCS'
+logTraceCS :: MonadLogger m => GHC.CallStack -> Text -> m ()
+logTraceCS cs msg = logCS cs "" LevelTrace msg
+
+-- | See 'logDebugCS'
+logFatalCS :: MonadLogger m => GHC.CallStack -> Text -> m ()
+logFatalCS cs msg = logCS cs "" LevelFatal msg
 
 -- | See 'logDebugCS'
 --
